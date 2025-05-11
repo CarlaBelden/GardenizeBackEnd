@@ -1,0 +1,73 @@
+-- read into psql with:
+-- \i data/plant.sql
+DROP TABLE IF EXISTS entry;
+
+CREATE TABLE gardener (
+    user_id SERIAL PRIMARY KEY,
+    user_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE plant (
+    plant_id INTEGER PRIMARY KEY,
+    common_name VARCHAR(255) NOT NULL,
+    default_image VARCHAR(1024),
+    watering VARCHAR(255) NOT NULL,
+    sunlight  VARCHAR(255) NOT NULL,
+    hardiness_min INTEGER NOT NULL,
+    hardiness_max INTEGER NOT NULL,
+    flowers VARCHAR(255),
+    flowering_season  VARCHAR(255),
+    indoor Boolean,
+    description VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE project (
+    project_id SERIAL PRIMARY KEY,
+    project_name VARCHAR(255) NOT NULL,
+    user_id INTEGER REFERENCES gardener(user_id),
+    posted_date DATE NOT NULL DEFAULT NOW(),
+    summary TEXT NOT NULL,
+    plant_id INTEGER REFERENCES plant(plant_id)
+);
+
+CREATE TABLE comment (
+    comment_id SERIAL PRIMARY KEY,
+    project_id INTEGER REFERENCES project(project_id),
+    plant_id INTEGER REFERENCES plant(plant_id),
+    user_id INTEGER REFERENCES gardener(user_id),
+    posted_date DATE NOT NULL DEFAULT NOW(),
+    comment TEXT NOT NULL
+);
+
+
+
+
+INSERT INTO gardener (user_name) VALUES
+('Alice Green'),
+('Bob Bloom'),
+('Cara Leaf');
+
+INSERT INTO plant (
+    plant_id, common_name, default_image, watering, sunlight,
+    hardiness_min, hardiness_max, flowers, flowering_season, indoor, description
+) VALUES
+(47, 'Butterfly Variegated Japanese Maple', 'https://perenual.com/storage/species_image/47_acer_palmatum_butterfly/og/20251027248_dc9cfd6f65_b.jpg', 'Average', 'Full Sun', 6, 6, 'Reddish-Purple Flowers', 'Spring', FALSE, 'Acer palmatum ''Butterfly'' is a stunning variegated Japanese maple with bright yellow foliage that''s sure to draw attention. Its fine-textured leaves feature a network of veins in shades of green and white, resembling the pattern on a butterfly''s wings. In the summer, the foliage fades to a pale cream color, and in the autumn, the yellow-green edges flush pink. Its weeping form creates an enchanting, cascading display. This low-maintenance plant tolerates a variety of soils and is drought-tolerant once established, making it a wonderful choice for gardens of all sizes. Its stunning leaf display makes Butterfly Variegated Japanese Maple a must-have feature for the garden.'),
+(216, 'Appalachian Red Redbud', 'https://perenual.com/storage/species_image/216_cercis_canadensis_appalachian_red/og/Cercis_canadensis_Appalachian_Red_1zz.jpg', 'Average', 'Full Sun', 5, 5, 'Pink Flowers ', 'Spring', FALSE, 'The Appalachian Red Redbud is a beautiful medium-sized deciduous tree native to the United States. Its stunning deep red blooms make it a stunning addition to any garden, and it is a favorite for those who are looking for something special. The large, heart-shaped leaves turn an amazing yellow-orange in autumn, adding another layer of beauty to this unique plant. It''s also very easy to care for, making it a great addition for those who don''t have a lot of experience with gardening. In addition, the Appalachian Red Redbud is also a symbol of hope and renewal, making it a meaningful plant to have in your home.'),
+(250, 'Red Flowering Dogwood', 'https://perenual.com/storage/species_image/250_cornus_florida_var_rubra/og/10108500273_70c8821e33_b.jpg', 'Average', 'Full Sun', 6, 6, 'White (bracts) Flowers', 'Spring', FALSE, 'The Red Flowering Dogwood (Cornus florida ''var. rubra'') is a truly amazing plant species. With vivid, deep red blossoms from late spring to early summer, the Red Flowering Dogwood adds beautiful color to any landscape. Its broad, spreading branches are equally stunning, with auburn-toned bark providing year-round interest. This plant is also drought tolerant, making it a great choice for both shade and sun in warmer climates. The vibrant flowers not only attract birds and other pollinators, but they also make lovely cut flowers as well. Truly, the Red Flowering Dogwood is a standout species.');
+
+
+INSERT INTO project (
+    project_name, user_id, posted_date, summary, plant_id
+) VALUES
+('Kitchen Herb Garden', 1, '2024-03-15', 'Growing fresh herbs indoors.', 2),
+('Succulent Rescue', 2, '2024-04-10', 'Reviving my neglected Aloe.', 1),
+('Air-Purifying Indoor Setup', 3, '2024-04-22', 'Trying snake plants for clean air.', 3);
+
+
+INSERT INTO comment (
+    project_id, plant_id, user_id, posted_date, comment
+) VALUES
+(1, 216, 2, '2024-03-16', 'Possible front yard show stopper.'),
+(2, 47, 3, '2024-04-11', 'Great idea for the back yard'),
+(3, 250, 1, '2024-04-23', 'Something to consider is foliage.'),
+(1, 216, 3, '2024-03-17', 'Great for spring foliage.');
