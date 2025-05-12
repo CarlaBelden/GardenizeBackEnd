@@ -39,7 +39,6 @@ class ProjectCreateOut(BaseModel):
     user_id: int
     posted_date: datetime | None = None
     summary: str
-    plant_id: int
 
 
 class CommentIn(BaseModel):

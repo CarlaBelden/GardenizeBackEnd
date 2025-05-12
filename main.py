@@ -11,6 +11,7 @@ from schemas import (
     CommentOut,
 )
 import db
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 

@@ -11,6 +11,8 @@ from schemas import (
     CommentOut,
 )
 
+DATABASE_URL = "postgresql+psycopg://postgres:postgres@localhost:5432/plant"
+
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 
@@ -18,7 +20,7 @@ SessionLocal = sessionmaker(bind=engine)
 def get_plants() -> list[PlantOut]:
     with SessionLocal() as db:
         db_plants = db.query(DBPlant).all()
-
+        print(db_plants)
         plants: list[PlantOut] = []
         for db_plant in db_plants:
             plants.append(
