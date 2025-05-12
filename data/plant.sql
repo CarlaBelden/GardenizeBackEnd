@@ -36,7 +36,7 @@ CREATE TABLE comment (
     plant_id INTEGER REFERENCES plant(plant_id),
     user_id INTEGER REFERENCES gardener(user_id),
     posted_date DATE NOT NULL DEFAULT NOW(),
-    comment TEXT NOT NULL
+    comment TEXT
 );
 
 

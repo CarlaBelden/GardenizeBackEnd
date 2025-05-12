@@ -1,7 +1,15 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pathlib import Path
-from schemas import PostOut, PostCreate
+from schemas import (
+    GardenerIn,
+    GardenerOut,
+    PlantOut,
+    ProjectCreateIn,
+    ProjectCreateOut,
+    CommentIn,
+    CommentOut,
+)
 import db
 
 app = FastAPI()
@@ -18,5 +26,5 @@ app.add_middleware(
 
 
 @app.get("/api/plants")
-async def get_plants() -> list[PostOut]:
+async def get_plants() -> list[PlantOut]:
     return db.get_plants()
