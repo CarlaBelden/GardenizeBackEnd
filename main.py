@@ -2,8 +2,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pathlib import Path
 from schemas import (
-    GardenerIn,
-    GardenerOut,
     PlantOut,
     ProjectCreateIn,
     ProjectCreateOut,

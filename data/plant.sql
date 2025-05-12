@@ -4,12 +4,7 @@ DROP TABLE IF EXISTS plant_project;
 DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS project;
 DROP TABLE IF EXISTS plant;
-DROP TABLE IF EXISTS gardener;
 
-CREATE TABLE gardener (
-    user_id SERIAL PRIMARY KEY,
-    user_name VARCHAR(100) NOT NULL
-);
 
 CREATE TABLE plant (
     plant_id INTEGER PRIMARY KEY,
@@ -28,33 +23,25 @@ CREATE TABLE plant (
 CREATE TABLE project (
     project_id SERIAL PRIMARY KEY,
     project_name VARCHAR(255) NOT NULL,
-    user_id INTEGER REFERENCES gardener(user_id),
     posted_date DATE NOT NULL DEFAULT NOW(),
     summary TEXT NOT NULL
 );
 
 CREATE TABLE comment (
     comment_id SERIAL PRIMARY KEY,
-    project_id INTEGER REFERENCES project(project_id),
+    project_id INTEGER REFERENCES project(project_id) ON DELETE CASCADE,
     plant_id INTEGER REFERENCES plant(plant_id),
-    user_id INTEGER REFERENCES gardener(user_id),
     posted_date DATE NOT NULL DEFAULT NOW(),
     comment TEXT
 );
 
 CREATE TABLE plant_project (
     plant_project_id SERIAL PRIMARY KEY,
-    project_id INTEGER REFERENCES project(project_id),
+    project_id INTEGER REFERENCES project(project_id) ON DELETE CASCADE,
     plant_id INTEGER REFERENCES plant(plant_id)
 );
 
 
-
-
-INSERT INTO gardener (user_name) VALUES
-('Alice Green'),
-('Bob Bloom'),
-('Cara Leaf');
 
 INSERT INTO plant (
     plant_id, common_name, default_image, watering, sunlight,
@@ -66,20 +53,20 @@ INSERT INTO plant (
 
 
 INSERT INTO project (
-    project_name, user_id, posted_date, summary
+    project_name, posted_date, summary
 ) VALUES
-('Kitchen Herb Garden', 1, '2024-03-15', 'Growing fresh herbs indoors.'),
-('Succulent Rescue', 2, '2024-04-10', 'Reviving my neglected Aloe.'),
-('Air-Purifying Indoor Setup', 3, '2024-04-22', 'Trying snake plants for clean air.');
+('Kitchen Herb Garden', '2024-03-15', 'Growing fresh herbs indoors.'),
+('Succulent Rescue', '2024-04-10', 'Reviving my neglected Aloe.'),
+('Air-Purifying Indoor Setup', '2024-04-22', 'Trying snake plants for clean air.');
 
 
 INSERT INTO comment (
-    project_id, plant_id, user_id, posted_date, comment
+    project_id, plant_id, posted_date, comment
 ) VALUES
-(1, 216, 2, '2024-03-16', 'Possible front yard show stopper.'),
-(2, 47, 3, '2024-04-11', 'Great idea for the back yard'),
-(3, 250, 1, '2024-04-23', 'Something to consider is foliage.'),
-(1, 216, 3, '2024-03-17', 'Great for spring foliage.');
+(1, 216, '2024-03-16', 'Possible front yard show stopper.'),
+(2, 47, '2024-04-11', 'Great idea for the back yard'),
+(3, 250, '2024-04-23', 'Something to consider is foliage.'),
+(1, 216, '2024-03-17', 'Great for spring foliage.');
 
 INSERT INTO plant_project (
     plant_project_id, project_id, plant_id

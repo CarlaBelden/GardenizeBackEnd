@@ -3,15 +3,6 @@ from pydantic import AfterValidator, BaseModel
 from datetime import datetime
 
 
-class GardenerIn(BaseModel):
-    user_name: str
-
-
-class GardenerOut(BaseModel):
-    user_id: int
-    user_name: str
-
-
 class PlantOut(BaseModel):
     plant_id: int
     common_name: str
@@ -28,7 +19,6 @@ class PlantOut(BaseModel):
 
 class ProjectCreateIn(BaseModel):
     project_name: str
-    user_id: int
     summary: str
     plant_id: int
 
@@ -36,7 +26,6 @@ class ProjectCreateIn(BaseModel):
 class ProjectCreateOut(BaseModel):
     project_id: int
     project_name: str
-    user_id: int
     posted_date: datetime | None = None
     summary: str
 
@@ -44,7 +33,6 @@ class ProjectCreateOut(BaseModel):
 class CommentIn(BaseModel):
     project_id: int
     plant_id: int
-    user_id: int
     posted_date: datetime | None = None
     comment: str | None = None
 
@@ -53,6 +41,5 @@ class CommentOut(BaseModel):
     comment_id: int
     project_id: int
     plant_id: int
-    user_id: int
     posted_date: datetime | None = None
     comment: str

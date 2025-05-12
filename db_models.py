@@ -11,13 +11,6 @@ class Base(DeclarativeBase):
     pass
 
 
-class DBGardener(Base):
-    __tablename__ = "gardener"
-
-    user_id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    user_name: Mapped[str] = mapped_column(nullable=False)
-
-
 class DBPlant(Base):
     __tablename__ = "plant"
 
@@ -39,7 +32,6 @@ class DBProject(Base):
 
     project_id: Mapped[int] = mapped_column(primary_key=True, index=True)
     project_name: Mapped[str] = mapped_column(nullable=False)
-    user_id: Mapped[int] = mapped_column(ForeignKey("gardener.user_id"))
     posted_date: Mapped[datetime] = mapped_column(nullable=False)
     summary: Mapped[str] = mapped_column(nullable=False)
 
@@ -50,7 +42,6 @@ class DBComment(Base):
     comment_id: Mapped[int] = mapped_column(primary_key=True, index=True)
     project_id: Mapped[int] = mapped_column(ForeignKey("project.project_id"))
     plant_id: Mapped[int] = mapped_column(ForeignKey("plant.plant_id"))
-    user_id: Mapped[int] = mapped_column(ForeignKey("gardener.user_id"))
     posted_date: Mapped[datetime] = mapped_column(nullable=False)
     comment: Mapped[str] = mapped_column(nullable=True)
 
