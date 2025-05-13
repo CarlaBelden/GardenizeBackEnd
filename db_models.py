@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, func, DateTime
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -32,7 +32,9 @@ class DBProject(Base):
 
     project_id: Mapped[int] = mapped_column(primary_key=True, index=True)
     project_name: Mapped[str] = mapped_column(nullable=False)
-    posted_date: Mapped[datetime] = mapped_column(nullable=False)
+    posted_date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
     summary: Mapped[str] = mapped_column(nullable=False)
 
 

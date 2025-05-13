@@ -18,7 +18,6 @@ SessionLocal = sessionmaker(bind=engine)
 def get_plants() -> list[PlantOut]:
     with SessionLocal() as db:
         db_plants = db.query(DBPlant).all()
-        print(db_plants)
         plants: list[PlantOut] = []
         for db_plant in db_plants:
             plants.append(
@@ -37,3 +36,59 @@ def get_plants() -> list[PlantOut]:
                 )
             )
         return plants
+
+
+def get_plant(plant_id: int) -> PlantOut | None:
+    session = SessionLocal()
+    plant = session.query(DBPlant).filter(DBPlant.plant_id == plant_id).first()
+    if plant is None:
+        return None
+    if plant:
+        PlantOut(
+            plant_id=plant.plant_id,
+            common_name=plant.common_name,
+            default_image=plant.default_image,
+            watering=plant.watering,
+            sunlight=plant.sunlight,
+            hardiness_min=plant.hardiness_min,
+            hardiness_max=plant.hardiness_max,
+            flowers=plant.flowers,
+            flowering_season=plant.flowering_season,
+            indoor=plant.indoor,
+            description=plant.description,
+        )
+    session.close()
+    # convert to a dictionary and return it
+    return plant
+
+
+def create_new_project(project: ProjectCreateIn) -> ProjectCreateOut:
+    db = SessionLocal()
+    db_project = DBProject(**project.model_dump())
+    db.add(db_project)
+    db.commit()
+    db.refresh(db_project)
+    project = ProjectCreateOut(
+        project_id=db_project.project_id,
+        project_name=db_project.project_name,
+        posted_date=db_project.posted_date,
+        summary=db_project.summary,
+    )
+    db.close()
+    return project
+
+
+def get_projects() -> list[ProjectCreateOut]:
+    with SessionLocal() as db:
+        db_projects = db.query(DBProject).all()
+        projects: list[ProjectCreateOut] = []
+        for db_project in db_projects:
+            projects.append(
+                ProjectCreateOut(
+                    project_id=db_project.project_id,
+                    project_name=db_project.project_name,
+                    posted_date=db_project.posted_date.strftime("%m-%d-%Y"),
+                    summary=db_project.summary,
+                )
+            )
+        return projects

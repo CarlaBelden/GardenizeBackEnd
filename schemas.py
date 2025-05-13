@@ -20,13 +20,12 @@ class PlantOut(BaseModel):
 class ProjectCreateIn(BaseModel):
     project_name: str
     summary: str
-    plant_id: int
 
 
 class ProjectCreateOut(BaseModel):
     project_id: int
     project_name: str
-    posted_date: datetime | None = None
+    posted_date: str
     summary: str
 
 

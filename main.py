@@ -27,3 +27,23 @@ app.add_middleware(
 @app.get("/api/plants")
 async def get_plants() -> list[PlantOut]:
     return db.get_plants()
+
+
+@app.get("/api/plants/{plant_id}")
+def get_plant(plant_id: int) -> PlantOut:
+    plant = db.get_plant(plant_id)
+    if plant is None:
+        raise HTTPException(status_code=404, detail="Entry not found")
+    return plant
+
+
+# TODO: add create project to frontend
+@app.post("/api/projects")
+async def create_new_project(project: ProjectCreateIn) -> ProjectCreateOut:
+    return db.create_new_project(project)
+
+
+# TODO: add get all projects to frontend
+@app.get("/api/projects")
+async def get_projects() -> list[ProjectCreateOut]:
+    return db.get_projects()
