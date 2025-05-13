@@ -1,5 +1,5 @@
-from typing import Annotated
-from pydantic import AfterValidator, BaseModel
+from typing import List
+from pydantic import BaseModel
 from datetime import datetime
 
 
@@ -27,6 +27,11 @@ class ProjectCreateOut(BaseModel):
     project_name: str
     posted_date: str
     summary: str
+
+
+class ProjectPlants(BaseModel):
+    project: ProjectCreateOut
+    plants: List[PlantOut]
 
 
 class CommentIn(BaseModel):

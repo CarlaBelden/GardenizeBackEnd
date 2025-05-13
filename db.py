@@ -5,6 +5,7 @@ from schemas import (
     PlantOut,
     ProjectCreateIn,
     ProjectCreateOut,
+    ProjectPlants,
     CommentIn,
     CommentOut,
 )
@@ -94,8 +95,20 @@ def get_projects() -> list[ProjectCreateOut]:
         return projects
 
 
-def get_project(project_id: int) -> list[PlantOut]:
+def get_project(project_id: int) -> ProjectPlants | None:
     with SessionLocal() as db:
+
+        project = db.query(DBProject).filter(DBProject.project_id == project_id).first()
+        if project is None:
+            return None
+        if project:
+            project = ProjectCreateOut(
+                project_id=project.project_id,
+                project_name=project.project_name,
+                posted_date=project.posted_date.strftime("%m-%d-%Y"),
+                summary=project.summary,
+            )
+
         db_plants_project = (
             db.query(DBPlant)
             .join(DBPlant_Project, DBPlant.plant_id == DBPlant_Project.plant_id)
@@ -119,4 +132,4 @@ def get_project(project_id: int) -> list[PlantOut]:
                     description=db_plant.description,
                 )
             )
-        return plants_project
+        return ProjectPlants(project=project, plants=plants_project)
