@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from db_models import DBPlant, DBProject, DBComment
+from db_models import DBPlant, DBProject, DBComment, DBPlant_Project
 from schemas import (
     PlantOut,
     ProjectCreateIn,
@@ -92,3 +92,31 @@ def get_projects() -> list[ProjectCreateOut]:
                 )
             )
         return projects
+
+
+def get_project(project_id: int) -> list[PlantOut]:
+    with SessionLocal() as db:
+        db_plants_project = (
+            db.query(DBPlant)
+            .join(DBPlant_Project, DBPlant.plant_id == DBPlant_Project.plant_id)
+            .filter(DBPlant_Project.project_id == project_id)
+            .all()
+        )
+        plants_project: list[PlantOut] = []
+        for db_plant in db_plants_project:
+            plants_project.append(
+                PlantOut(
+                    plant_id=db_plant.plant_id,
+                    common_name=db_plant.common_name,
+                    default_image=db_plant.default_image,
+                    watering=db_plant.watering,
+                    sunlight=db_plant.sunlight,
+                    hardiness_min=db_plant.hardiness_min,
+                    hardiness_max=db_plant.hardiness_max,
+                    flowers=db_plant.flowers,
+                    flowering_season=db_plant.flowering_season,
+                    indoor=db_plant.indoor,
+                    description=db_plant.description,
+                )
+            )
+        return plants_project

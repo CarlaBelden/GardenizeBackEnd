@@ -43,7 +43,11 @@ async def create_new_project(project: ProjectCreateIn) -> ProjectCreateOut:
     return db.create_new_project(project)
 
 
-# TODO: add get all projects to frontend
 @app.get("/api/projects")
 async def get_projects() -> list[ProjectCreateOut]:
     return db.get_projects()
+
+
+@app.get("/api/projects/{project_id}")
+async def get_project(project_id: int) -> list[PlantOut]:
+    return db.get_project(project_id)
