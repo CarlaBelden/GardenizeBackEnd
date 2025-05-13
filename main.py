@@ -31,7 +31,7 @@ def get_plant(plant_id: int) -> PlantOut:
     return plant
 
 
-# TODO: add create project to frontend, 500 error??
+# TODO: add create project to frontend
 @app.post("/api/projects")
 async def create_new_project(project: ProjectCreateIn) -> ProjectCreateOut:
     return db.create_new_project(project)

@@ -72,7 +72,7 @@ def create_new_project(project: ProjectCreateIn) -> ProjectCreateOut:
     project = ProjectCreateOut(
         project_id=db_project.project_id,
         project_name=db_project.project_name,
-        posted_date=db_project.posted_date,
+        posted_date=db_project.posted_date.strftime("%m-%d-%Y"),
         summary=db_project.summary,
     )
     db.close()
