@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pathlib import Path
 from schemas import (
@@ -10,7 +11,7 @@ from schemas import (
     ProjectPlantsCreateOut,
 )
 import db
-from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 
@@ -62,7 +63,7 @@ async def create_project_plants(
 
 
 @app.delete("/api/projects/{project_id}")
-async def delete_project(project_id: int):
-    if not delete_project(project_id):
+async def delete_project_endpoint(project_id: int):
+    if not db.delete_project(project_id):
         raise HTTPException(status_code=404, detail="Not Found")
     return {"detail": "Project deleted sucessfully"}
