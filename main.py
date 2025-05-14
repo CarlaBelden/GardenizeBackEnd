@@ -1,7 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pathlib import Path
-from schemas import PlantOut, ProjectCreateIn, ProjectCreateOut, ProjectPlants
+from schemas import (
+    PlantOut,
+    ProjectCreateIn,
+    ProjectCreateOut,
+    ProjectPlants,
+    ProjectPlantsCreateIn,
+    ProjectPlantsCreateOut,
+)
 import db
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -31,7 +38,6 @@ def get_plant(plant_id: int) -> PlantOut:
     return plant
 
 
-# TODO: add create project to frontend
 @app.post("/api/projects")
 async def create_new_project(project: ProjectCreateIn) -> ProjectCreateOut:
     return db.create_new_project(project)
@@ -45,3 +51,10 @@ async def get_projects() -> list[ProjectCreateOut]:
 @app.get("/api/projects/{project_id}", response_model=ProjectPlants)
 async def get_project(project_id: int) -> ProjectPlants | None:
     return db.get_project(project_id)
+
+
+@app.post("/api/project-plants/")
+async def create_project_plants(
+    project: ProjectPlantsCreateIn,
+) -> ProjectPlantsCreateOut:
+    return db.create_project_plants(project)

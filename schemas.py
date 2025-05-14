@@ -22,6 +22,17 @@ class ProjectCreateIn(BaseModel):
     summary: str
 
 
+class ProjectPlantsCreateIn(BaseModel):
+    project_id: int
+    plant_id: int
+
+
+class ProjectPlantsCreateOut(BaseModel):
+    plant_project_id: int
+    project_id: int
+    plant_id: int
+
+
 class ProjectCreateOut(BaseModel):
     project_id: int
     project_name: str

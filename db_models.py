@@ -48,9 +48,11 @@ class DBComment(Base):
     comment: Mapped[str] = mapped_column(nullable=True)
 
 
-class DBPlant_Project(Base):
+class DBPlants_Project(Base):
     __tablename__ = "plant_project"
 
-    plant_project_id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    plant_project_id: Mapped[int] = mapped_column(
+        primary_key=True, autoincrement=True, index=True
+    )
     project_id: Mapped[int] = mapped_column(ForeignKey("project.project_id"))
     plant_id: Mapped[int] = mapped_column(ForeignKey("plant.plant_id"))

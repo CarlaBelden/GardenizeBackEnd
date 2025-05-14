@@ -1,11 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from db_models import DBPlant, DBProject, DBComment, DBPlant_Project
+from db_models import DBPlant, DBProject, DBComment, DBPlants_Project
 from schemas import (
     PlantOut,
     ProjectCreateIn,
     ProjectCreateOut,
     ProjectPlants,
+    ProjectPlantsCreateIn,
+    ProjectPlantsCreateOut,
     CommentIn,
     CommentOut,
 )
@@ -111,8 +113,8 @@ def get_project(project_id: int) -> ProjectPlants | None:
 
         db_plants_project = (
             db.query(DBPlant)
-            .join(DBPlant_Project, DBPlant.plant_id == DBPlant_Project.plant_id)
-            .filter(DBPlant_Project.project_id == project_id)
+            .join(DBPlants_Project, DBPlant.plant_id == DBPlants_Project.plant_id)
+            .filter(DBPlants_Project.project_id == project_id)
             .all()
         )
         plants_project: list[PlantOut] = []
@@ -133,3 +135,18 @@ def get_project(project_id: int) -> ProjectPlants | None:
                 )
             )
         return ProjectPlants(project=project, plants=plants_project)
+
+
+def create_project_plants(project: ProjectPlantsCreateIn) -> ProjectPlantsCreateOut:
+    with SessionLocal() as db:
+        db_plants_project = DBPlants_Project(**project.model_dump())
+        db.add(db_plants_project)
+        db.commit()
+        db.refresh(db_plants_project)
+        plants_project = ProjectPlantsCreateOut(
+            plant_project_id=db_plants_project.plant_project_id,
+            project_id=db_plants_project.project_id,
+            plant_id=db_plants_project.plant_id,
+        )
+
+    return plants_project
