@@ -53,8 +53,16 @@ async def get_project(project_id: int) -> ProjectPlants | None:
     return db.get_project(project_id)
 
 
+# TODO: needs frontend
 @app.post("/api/project-plants/")
 async def create_project_plants(
     project: ProjectPlantsCreateIn,
 ) -> ProjectPlantsCreateOut:
     return db.create_project_plants(project)
+
+
+@app.delete("/api/projects/{project_id}")
+async def delete_project(project_id: int):
+    if not delete_project(project_id):
+        raise HTTPException(status_code=404, detail="Not Found")
+    return {"detail": "Project deleted sucessfully"}

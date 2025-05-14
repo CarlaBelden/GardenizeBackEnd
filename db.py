@@ -150,3 +150,13 @@ def create_project_plants(project: ProjectPlantsCreateIn) -> ProjectPlantsCreate
         )
 
     return plants_project
+
+
+def delete_project(project_id: int) -> bool:
+    with SessionLocal() as db:
+        project = db.query(DBProject).filter(DBProject.project_id == project_id).first()
+        if project is None:
+            return False
+        db.delete(project)
+        db.commit()
+    return True
