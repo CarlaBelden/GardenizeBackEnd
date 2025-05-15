@@ -45,3 +45,16 @@ This command will run the FastAPI server:
 ```bash
 fastapi dev main.py
 ```
+
+start the database server
+docker compose up -d
+connect to the database server
+docker exec -it postgres_db psql -U postgres
+create a new database for this project
+postgres=# create database plant;
+connect to our database
+postgres=# \c plant
+load the database schema
+journal=# \i data/plant.sql;
+
+exit

@@ -54,7 +54,6 @@ async def get_project(project_id: int) -> ProjectPlants | None:
     return db.get_project(project_id)
 
 
-# TODO: needs frontend
 @app.post("/api/project-plants/")
 async def create_project_plants(
     project: ProjectPlantsCreateIn,
