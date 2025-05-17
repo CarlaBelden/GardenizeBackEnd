@@ -47,14 +47,11 @@ class ProjectPlants(BaseModel):
 
 class CommentIn(BaseModel):
     project_id: int
-    plant_id: int
-    posted_date: datetime | None = None
     comment: str | None = None
 
 
 class CommentOut(BaseModel):
     comment_id: int
     project_id: int
-    plant_id: int
-    posted_date: datetime | None = None
+    posted_date: str
     comment: str

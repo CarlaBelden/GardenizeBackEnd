@@ -9,6 +9,8 @@ from schemas import (
     ProjectPlants,
     ProjectPlantsCreateIn,
     ProjectPlantsCreateOut,
+    CommentIn,
+    CommentOut,
 )
 import db
 
@@ -57,12 +59,26 @@ async def get_project(project_id: int) -> ProjectPlants | None:
 @app.post("/api/project-plants/")
 async def create_project_plants(
     project: ProjectPlantsCreateIn,
-) -> ProjectPlantsCreateOut:
+) -> ProjectPlantsCreateOut | None:
+    if db.get_project(project.project_id) is None:
+        raise HTTPException(status_code=404, detail="Project already exists")
     return db.create_project_plants(project)
 
 
 @app.delete("/api/projects/{project_id}")
-async def delete_project_endpoint(project_id: int):
+def delete_project_endpoint(project_id: int):
     if not db.delete_project(project_id):
         raise HTTPException(status_code=404, detail="Not Found")
     return {"detail": "Project deleted sucessfully"}
+
+
+@app.delete("/api/projects/{project_id}/{plant_id}")
+def delete_project_plant_endpoint(project_id: int, plant_id: int):
+    if not db.delete_project_plant(project_id, plant_id):
+        raise HTTPException(status_code=404, detail="Not Found")
+    return {"detail": "Plant removed sucessfully"}
+
+
+@app.get("/api/projects/{project_id}/comments/")
+async def get_comments(project_id: int) -> list[CommentOut]:
+    return db.get_comments(project_id)

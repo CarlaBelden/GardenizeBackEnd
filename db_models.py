@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import ForeignKey, func, DateTime
+from sqlalchemy import ForeignKey, func, DateTime, UniqueConstraint
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -43,16 +43,19 @@ class DBComment(Base):
 
     comment_id: Mapped[int] = mapped_column(primary_key=True, index=True)
     project_id: Mapped[int] = mapped_column(ForeignKey("project.project_id"))
-    plant_id: Mapped[int] = mapped_column(ForeignKey("plant.plant_id"))
-    posted_date: Mapped[datetime] = mapped_column(nullable=False)
+    posted_date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
     comment: Mapped[str] = mapped_column(nullable=True)
 
 
 class DBPlants_Project(Base):
     __tablename__ = "plant_project"
 
-    plant_project_id: Mapped[int] = mapped_column(
-        primary_key=True, autoincrement=True, index=True
-    )
+    plant_project_id: Mapped[int] = mapped_column(primary_key=True, index=True)
     project_id: Mapped[int] = mapped_column(ForeignKey("project.project_id"))
     plant_id: Mapped[int] = mapped_column(ForeignKey("plant.plant_id"))
+
+    __table_args__ = (
+        UniqueConstraint("project_id", "plant_id", name="unique_project_plant"),
+    )

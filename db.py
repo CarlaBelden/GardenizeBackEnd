@@ -66,18 +66,18 @@ def get_plant(plant_id: int) -> PlantOut | None:
 
 
 def create_new_project(project: ProjectCreateIn) -> ProjectCreateOut:
-    db = SessionLocal()
-    db_project = DBProject(**project.model_dump())
-    db.add(db_project)
-    db.commit()
-    db.refresh(db_project)
-    project = ProjectCreateOut(
-        project_id=db_project.project_id,
-        project_name=db_project.project_name,
-        posted_date=db_project.posted_date.strftime("%m-%d-%Y"),
-        summary=db_project.summary,
-    )
-    db.close()
+    with SessionLocal() as db:
+        db_project = DBProject(**project.model_dump())
+        db.add(db_project)
+        db.commit()
+        db.refresh(db_project)
+        project = ProjectCreateOut(
+            project_id=db_project.project_id,
+            project_name=db_project.project_name,
+            posted_date=db_project.posted_date.strftime("%m-%d-%Y"),
+            summary=db_project.summary,
+        )
+
     return project
 
 
@@ -137,8 +137,22 @@ def get_project(project_id: int) -> ProjectPlants | None:
         return ProjectPlants(project=project, plants=plants_project)
 
 
-def create_project_plants(project: ProjectPlantsCreateIn) -> ProjectPlantsCreateOut:
+def create_project_plants(
+    project: ProjectPlantsCreateIn,
+) -> ProjectPlantsCreateOut | None:
     with SessionLocal() as db:
+        # Check if the combination of project_id and plant_id already exists
+        existing_entry = (
+            db.query(DBPlants_Project)
+            .filter(
+                DBPlants_Project.project_id == project.project_id,
+                DBPlants_Project.plant_id == project.plant_id,
+            )
+            .first()
+        )
+        if existing_entry:
+            return None
+
         db_plants_project = DBPlants_Project(**project.model_dump())
         db.add(db_plants_project)
         db.commit()
@@ -160,3 +174,38 @@ def delete_project(project_id: int) -> bool:
         db.delete(project)
         db.commit()
     return True
+
+
+def delete_project_plant(project_id: int, plant_id: int) -> bool:
+    with SessionLocal() as db:
+        plants_project = (
+            db.query(DBPlants_Project)
+            .filter(
+                DBPlants_Project.project_id == project_id,
+                DBPlants_Project.plant_id == plant_id,
+            )
+            .first()
+        )
+        if plants_project is None:
+            return False
+        db.delete(plants_project)
+        db.commit()
+    return True
+
+
+def get_comments(project_id: int) -> list[CommentOut]:
+    with SessionLocal() as db:
+        db_comments = (
+            db.query(DBComment).filter(DBComment.project_id == project_id).all()
+        )
+        comments: list[CommentOut] = []
+        for db_comment in db_comments:
+            comments.append(
+                CommentOut(
+                    comment_id=db_comment.comment_id,
+                    project_id=db_comment.project_id,
+                    posted_date=db_comment.posted_date.strftime("%m-%d-%Y"),
+                    comment=db_comment.comment,
+                )
+            )
+        return comments

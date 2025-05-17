@@ -30,7 +30,6 @@ CREATE TABLE project (
 CREATE TABLE comment (
     comment_id SERIAL PRIMARY KEY,
     project_id INTEGER REFERENCES project(project_id) ON DELETE CASCADE,
-    plant_id INTEGER REFERENCES plant(plant_id),
     posted_date DATE NOT NULL DEFAULT NOW(),
     comment TEXT
 );
@@ -38,7 +37,8 @@ CREATE TABLE comment (
 CREATE TABLE plant_project (
     plant_project_id SERIAL PRIMARY KEY,
     project_id INTEGER REFERENCES project(project_id) ON DELETE CASCADE,
-    plant_id INTEGER REFERENCES plant(plant_id)
+    plant_id INTEGER REFERENCES plant(plant_id),
+    UNIQUE (project_id, plant_id) -- Ensures unique plant_id per project_id
 );
 
 
@@ -70,18 +70,16 @@ INSERT INTO project (
 ('Butterfly Garden', '2024-05-10', 'Plant nectar-rich flowers and host plants to attract and support butterflies.');
 
 
-INSERT INTO comment (
-    project_id, plant_id, posted_date, comment
+INSERT INTO comment ( project_id, posted_date, comment
 ) VALUES
-(1, 216, '2024-03-16', 'Possible front yard show stopper.'),
-(2, 47, '2024-04-11', 'Great idea for the back yard'),
-(3, 250, '2024-04-23', 'Something to consider is foliage.'),
-(1, 216, '2024-03-17', 'Great for spring foliage.');
+( 1, '2024-03-16', 'Possible front yard show stopper.'),
+( 1, '2024-04-11', 'Great idea for the back yard'),
+( 2, '2024-04-23', 'Something to consider is foliage.'),
+( 3, '2024-03-17', 'Great for spring foliage.');
 
-INSERT INTO plant_project (
-    plant_project_id, project_id, plant_id
+INSERT INTO plant_project (project_id, plant_id
 ) VALUES
-(1, 2, 216),
-(2, 3, 47),
-(3, 1, 250),
-(4, 3, 216);
+( 2, 216),
+( 3, 47),
+( 1, 250),
+( 3, 216);
