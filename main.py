@@ -82,3 +82,8 @@ def delete_project_plant_endpoint(project_id: int, plant_id: int):
 @app.get("/api/projects/{project_id}/comments/")
 async def get_comments(project_id: int) -> list[CommentOut]:
     return db.get_comments(project_id)
+
+
+@app.post("/api/projects/{project_id}/comments/")
+async def create_new_comment(comment: CommentIn) -> CommentOut:
+    return db.create_new_comment(comment)

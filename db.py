@@ -209,3 +209,19 @@ def get_comments(project_id: int) -> list[CommentOut]:
                 )
             )
         return comments
+
+
+def create_new_comment(comment: CommentIn) -> CommentOut:
+    with SessionLocal() as db:
+        db_comment = DBComment(**comment.model_dump())
+        db.add(db_comment)
+        db.commit()
+        db.refresh(db_comment)
+        comment = CommentOut(
+            comment_id=db_comment.comment_id,
+            project_id=db_comment.project_id,
+            posted_date=db_comment.posted_date.strftime("%m-%d-%Y"),
+            comment=db_comment.comment,
+        )
+
+    return comment
